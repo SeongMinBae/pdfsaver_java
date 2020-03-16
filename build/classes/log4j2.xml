@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+	<properties>
+		<property name="log-path">c:\\logs</property>
+	</properties>
+
+	<appenders>
+		<Console name="Console" target="SYSTEM_OUT">
+			<PatternLayout pattern="%d{HH:mm:ss} [%t] %-5level %logger{36}::%M - %msg%n" />
+		</Console>
+		
+		<File name="simple_file" fileName="${log-path}/sample.log" append="true">
+			<PatternLayout pattern="%d %5p [%c::%M] %m%n"/>
+		</File>
+		
+		<RollingFile name="file" fileName="${log-path}/fta.log" filePattern="${log-path}/fta_%d{yyyy-MM-dd}-%i.log" append="true">
+			<PatternLayout pattern="%d %5p [%c::%M] %m%n" />
+			<Policies>
+			<!-- interval(default 1)이므로 1초 간격으로 rolling 수행
+				intervar속성 추가 
+				1초간격이 아닌 1일 간격인듯 하기도 하고 애매모호함-_-;;
+			--> 
+				<TimeBasedTriggeringPolicy />
+				<!-- 사이즈 제한을 하고 싶을 경우 아래 속성 추가
+					%i 항목에 의해 순번 처리됨
+				 -->
+				<SizeBasedTriggeringPolicy size="100 MB"/>
+			</Policies>			
+		</RollingFile>
+			
+	</appenders>
+	<Loggers>
+		<!-- logger의 name에는 class 속성이 들어간다.
+			문제는 현재 프로젝트는 src밑에 개별로 package를 쪼개놔서 이를 설정하기가 애매해보인다.
+			그냥 각각 logger 설정-_-;
+			
+			additivity => 로그 중복여부, ROOT와 중복될 경우 한곳에서만 출력
+		-->
+		<Logger name="net.lskworld" level="DEBUG" additivity="false">
+			<AppenderRef ref="Console" />
+		</Logger>		
+		
+		<!-- console 에 출력하는건 ROOT를 사용하게 함 -->
+		<Root level="DEBUG">
+			<AppenderRef ref="Console" />
+		</Root>
+	</Loggers>
+</configuration>
